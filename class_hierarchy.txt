@@ -1,0 +1,19 @@
+#############################################################
+###################### CLASS HIERARCHY ######################
+#############################################################
+        
+                      Dep                       Dep                 
+        Terminal    ------>     Display   <-----------|
+    [Curse console            [Game Loop]             |
+    functionality]                                    | 
+                                                      |
+                Dep                      Child        |
+    UserInput  ---->  PlaygroundField   <----   FieldWorkers
+   [Define user        [Field of                 [Thread workers
+    input]              operations]             managing] 
+                                                      |
+                                                      | Dep
+                                                      |
+                                                FieldWorker
+                                              [Thread worker]
+
