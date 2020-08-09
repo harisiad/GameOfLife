@@ -19,7 +19,7 @@ void FieldWorkers::AssignWorkers()
 		fieldWorkers.push_back(std::vector<FieldWorker*>(GetColumns()));
 		for (unsigned int j = 0; j < GetColumns(); j++)
 		{
-			fieldWorkers[i].push_back(new FieldWorker(&GetField()[i][j],i,j,GetColumns()));
+			fieldWorkers[i].push_back(new FieldWorker(GetC(i,0),i,j,GetRows()));
 		}
 	}
 }

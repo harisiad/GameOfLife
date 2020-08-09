@@ -3,12 +3,14 @@
 
 #include "userInput.h"
 
+#include <vector>
+
 class PlaygroundField
 {
 private:
     UserInput rawData;
 
-    static char** field;
+    static std::vector<std::string> field;
 
     unsigned int UPPER_FRAME_ROW = 0;
     unsigned int BOTTOM_FRAME_ROW;
@@ -30,9 +32,10 @@ public:
     inline unsigned int GetRows() { return rawData.RowCount(); }
     inline unsigned int GetColumns() { return rawData.ColumnCount(); }
 
-    inline static char** GetField() { return field; }
+    inline static std::vector<std::string> GetField() { return field; }
 
     inline static char GetCell(int row, int col) { return PlaygroundField::field[row][col]; }
+    inline static std::string* GetC(int row, int col) { return &PlaygroundField::field[row]; }
     bool IsTribeMark(int ,int);
 };
 

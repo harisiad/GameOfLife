@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 
 class UserInput
 {
@@ -34,7 +35,7 @@ public:
     void CountColumns();
     void CountRows();
 
-    std::istream& GetLine(char*);
+    std::istream& GetLine(std::string&);
     
 };
 

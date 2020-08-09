@@ -51,22 +51,22 @@ void Display::DisplayJob()
 						}
 						else
 						{
-							//std::lock_guard<std::mutex> lg(glMutex);
-				            glMutex.lock();
-							Display::currTerm.AddChar(Display::field->GetCell(row,col));
-							glMutex.unlock();
+							{
+								std::lock_guard<std::mutex> lg(glMutex);
+								Display::currTerm.AddChar(Display::field->GetCell(row,col));
+							}
 						}
 					}
 					else
 					{
-						//std::lock_guard<std::mutex> lg(glMutex);
-						glMutex.lock();
-						Display::currTerm.AddChar(Display::field->GetCell(row,col));
-						glMutex.unlock();
+						{
+							std::lock_guard<std::mutex> lg(glMutex);
+							Display::currTerm.AddChar(Display::field->GetCell(row,col));
+						}
 					}
 				}
 			}
 		}
-		currTerm.RefreshRateTerminal(10);
+		currTerm.RefreshRateTerminal(1000);
 	}
 }

@@ -53,9 +53,9 @@ void UserInput::CountColumns()
 
 void UserInput::CountRows()
 {
-    char* str;
+    std::string str;
 	int row_num = 0;
-    str = (char*)malloc(sizeof(char) * ColumnCount());
+    //str->reserve(ColumnCount());
 	while (GetLine(str))
 	{
 		if (sourceFile.eof()) break;
@@ -68,7 +68,7 @@ void UserInput::CountRows()
     rowCount = row_num;
 }
 
-std::istream& UserInput::GetLine(char* out)
+std::istream& UserInput::GetLine(std::string& out)
 {
-    return sourceFile.getline(out, MAX_BUFFER_SIZE);
+    return std::getline(sourceFile ,out);
 }

@@ -13,6 +13,7 @@ private:
 
     std::thread* displayThrd;
 public:
+
     Display(std::string);
     ~Display();
 

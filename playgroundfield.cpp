@@ -1,17 +1,21 @@
 #include "playgroundfield.h"
 
-char** PlaygroundField::field = {};
+std::vector<std::string> PlaygroundField::field;
 
 void PlaygroundField::CreatePlaygroundField()
 {
-    PlaygroundField::field = (char**) malloc(sizeof(char*) * rawData.RowCount());
+    PlaygroundField::field.reserve(rawData.RowCount());
+    PlaygroundField::field = std::initializer_list<std::string>();
 	int row = 0;
 
-	PlaygroundField::field[row] = (char*)malloc(sizeof(char) * rawData.ColumnCount());
+	PlaygroundField::field.push_back(std::string());
+    PlaygroundField::field[row].reserve(rawData.ColumnCount());
+
 	while (rawData.GetLine(PlaygroundField::field[row]))
 	{
 		row++;
-		PlaygroundField::field[row] = (char*)malloc(sizeof(char) * rawData.ColumnCount());
+    	PlaygroundField::field.push_back(std::string());
+		PlaygroundField::field[row].reserve(rawData.ColumnCount());
 	}
 }
 
@@ -31,10 +35,4 @@ PlaygroundField::PlaygroundField(std::string sourceFile)
 
 PlaygroundField::~PlaygroundField()
 {
-    for (unsigned int i = 0; i < rawData.RowCount(); i++)
-    {
-        delete field[i];
-    }
-
-    delete field;
 }
