@@ -27,27 +27,28 @@ void Display::DisplayJob()
     while (true)
 	{
 		Display::currTerm.ClearTerminal();
+		char* bound = "*"; char* endl = "\n";
 		for (unsigned int row = 0; row <= Display::field->GetRows(); row++)
 		{
 			for (unsigned int col = 0; col <= Display::field->GetColumns(); col++)
 			{
 				if (row == field->UpperFrame() || row == field->BottomFrame())
 				{
-					Display::currTerm.AddChar('*');
+					Display::currTerm.AddChar(bound);
 					if (col == field->RightFrame())
 					{
-						Display::currTerm.AddChar('*');
-						Display::currTerm.AddChar('\n');
+						Display::currTerm.AddChar(bound);
+						Display::currTerm.AddChar(endl);
 					}
 				}
 				else
 				{
 					if (col == field->LeftFrame() || col == field->RightFrame())
 					{
-						Display::currTerm.AddChar('*');
+						Display::currTerm.AddChar(bound);
 						if (col == field->RightFrame())
 						{
-							Display::currTerm.AddChar('\n');
+							Display::currTerm.AddChar(endl);
 						}
 						else
 						{
@@ -67,6 +68,6 @@ void Display::DisplayJob()
 				}
 			}
 		}
-		currTerm.RefreshRateTerminal(1000);
+		currTerm.RefreshRateTerminal(500);
 	}
 }

@@ -19,9 +19,19 @@ void FieldWorkers::AssignWorkers()
 		fieldWorkers.push_back(std::vector<FieldWorker*>(GetColumns()));
 		for (unsigned int j = 0; j < GetColumns(); j++)
 		{
-			fieldWorkers[i].push_back(new FieldWorker(GetC(i,0),i,j,GetRows()));
+			fieldWorkers[i].push_back(
+				new FieldWorker(
+					GetC(i,0),
+					GetCell(i,j-1),
+					GetCell(i,j+1),
+					i,
+					j,
+					GetRows()
+				)
+			);
 		}
 	}
+	std::cout << "Initialization Completed\n";
 }
 
 void FieldWorkers::WaitJobsFinish()
