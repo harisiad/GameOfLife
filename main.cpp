@@ -18,7 +18,7 @@ int main()
 	// Terminal currTerm = Terminal();
 	// FieldWorkers pField("field1");
 
-	Display dis("field1");
+	Display dis("field3");
 	dis.Run();
 
 	//std::vector<std::string> f = std::vector<std::string>(2);

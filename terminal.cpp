@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <curses.h>
+#include <iostream>
 
 Terminal::Terminal()
 {
@@ -21,14 +22,15 @@ void Terminal::ClearTerminal()
     clear();
 }
 
-void Terminal::AddChar(char c)
+void Terminal::AddChar(char* c)
 {
-    addch(c);
+    addch(*c);
 }
 
 void Terminal::RefreshRateTerminal(int rate)
 {
     refresh();
     //usleep(rate);
+
     std::this_thread::sleep_for(std::chrono::milliseconds(rate));
 }

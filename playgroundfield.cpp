@@ -21,7 +21,7 @@ void PlaygroundField::CreatePlaygroundField()
 
 bool PlaygroundField::IsTribeMark(int row, int col)
 {
-    return GetCell(row, col) == 'X';
+    return GetCell(row, col) == "X";
 }
 
 PlaygroundField::PlaygroundField(std::string sourceFile)

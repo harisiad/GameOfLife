@@ -9,7 +9,7 @@ public:
 
     void ClearTerminal();
     void RefreshRateTerminal(int);
-    void AddChar(char);
+    void AddChar(char*);
 };
 
 #endif

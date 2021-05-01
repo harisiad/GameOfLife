@@ -34,7 +34,7 @@ public:
 
     inline static std::vector<std::string> GetField() { return field; }
 
-    inline static char GetCell(int row, int col) { return PlaygroundField::field[row][col]; }
+    inline static char* GetCell(int row, int col) { return &PlaygroundField::field[row][col]; }
     inline static std::string* GetC(int row, int col) { return &PlaygroundField::field[row]; }
     bool IsTribeMark(int ,int);
 };

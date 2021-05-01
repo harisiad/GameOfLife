@@ -9,55 +9,72 @@
 class FieldWorker
 {
 private:
-    static std::string* FoW;
+    std::string* FoW;
+    char* upFoW;
+    char* downFoW;
     
-    static int size;
-    static int rSize;
-    static int row, col;
+    int size;
+    int rSize;
+    int row, col;
 
-    static unsigned int growthRate;
+    unsigned int growthRate;
     
-    static std::mutex glMutex;
+    std::mutex glMutex;
     
-    static bool isTribe;
-    static bool isGroundTile;
-    static bool isEmptyField;
+    bool isTribe;
+    bool isGroundTile;
+    bool isEmptyField;
 
     std::thread* worker;
     // Add team separation implementation
 
-protected:
-    static void GrowthRate();
-    static bool IsForest(int);
-    static bool IsWater(int);
-    static bool IsMountain(int);
-    static bool IsNeighbourEmptyField(int);
+    enum NEIGHBOUR
+    {
+        RIGHT = 1,
+        LEFT  = 2,
+        UP    = 3,
+        DOWN  = 4
+    };
+
+    protected : void
+    GrowthRate();
+    bool IsForest(int);
+    bool IsWater(int);
+    bool IsMountain(int);
+    bool IsNeighbourEmptyField(int);
     
-    static bool CanMigrate();
+    bool CanMigrate();
     
-    static bool CheckCells(int,char);
+    bool CheckCells(int,char);
     
-    static bool IsRightCellTribe();
-    static bool IsLeftCellTribe();
-    static bool IsUpCellTribe();
-    static bool IsDownCellTribe();
+    bool IsRightCellTribe();
+    bool IsLeftCellTribe();
+    bool IsUpCellTribe();
+    bool IsDownCellTribe();
 public:
     inline FieldWorker() {};
     inline FieldWorker(const FieldWorker&) {};
-    FieldWorker(std::string*, int, int, int);
+    FieldWorker(std::string*, char*, char*, int, int, int);
     ~FieldWorker();
 
-    static void WorkerJob();
+    void StartWorkerJob();
+    void WorkerJob();
     void WorkerJobFinish();
 
-    inline static void MarkAsTribe() { FieldWorker::isTribe = true; }
-    inline static bool IsTribe() { return FieldWorker::isTribe; }
-    inline static void MarkAsGroundTile() { FieldWorker::isGroundTile = true; }
-    inline static bool IsGroundTile() { return FieldWorker::isGroundTile; }
-    inline static void MarkAsEmptyField() { FieldWorker::isEmptyField = true; }
-    inline static bool IsEmptyField() { return FieldWorker::isEmptyField; }
-    inline static std::string* FOW() { return &FoW[col]; }
-    inline static void FOW(char c) { FoW[col] = c; }
+    inline void MarkAsTribe() { isTribe = true; isGroundTile = false; isEmptyField = false; }
+    inline bool IsTribe() { return isTribe; }
+    inline void MarkAsGroundTile() { isGroundTile = true; isTribe = false; isEmptyField = false; }
+    inline bool IsGroundTile() { return isGroundTile; }
+    inline void MarkAsEmptyField() { isEmptyField = true; isGroundTile = false; isTribe = false; }
+    inline bool IsEmptyField() { return isEmptyField; }
+    inline std::string* FOW() { return FoW; }
+    inline void FOW(char c) { FoW[col] = c; }
+
+    bool IsNeighbourATribe(int);
+    inline char GetRightNeighbour(int pos) { return (col + pos < size) ? (*FoW)[col + pos] : 'Z'; }
+    inline char GetLeftNeighbour(int pos) { return (col - pos >= 0) ? (*FoW)[col - pos] : 'Z'; }
+    inline char GetUpNeighbour(int pos) { std::string* tmp = FoW; return (row - pos >= 0) ? (*(tmp - pos)).at(col) : 'Z'; }
+    inline char GetDownNeighbour(int pos) { std::string* tmp = FoW; return (row + pos < rSize) ? (*(tmp + pos)).at(col) : 'Z'; }
 
     inline int GetRow() { return row; }
     inline int GetColumn() { return col; }
