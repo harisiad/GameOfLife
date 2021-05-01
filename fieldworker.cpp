@@ -23,8 +23,6 @@ FieldWorker::FieldWorker(std::string* data, char* upCell, char* downCell, int r,
 
     FieldWorker::FoW = (std::string*)malloc(sizeof(std::string));
 
-    //std::memcpy(FieldWorker::FoW, data, size);
-
     FieldWorker::FoW = data;
     
     if ((char)(*FieldWorker::FoW)[col] == 'X')
@@ -32,7 +30,7 @@ FieldWorker::FieldWorker(std::string* data, char* upCell, char* downCell, int r,
         (*FieldWorker::FoW)[col] = '5';
         MarkAsTribe();
         growthRate = 1;
-        worker = new std::thread(&FieldWorker::WorkerJob, this);
+        //worker = new std::thread(&FieldWorker::WorkerJob, this);
     }
     else if ((char)(*FieldWorker::FoW)[col] == 'F' ||
              (char)(*FieldWorker::FoW)[col] == 'W' ||
@@ -45,12 +43,27 @@ FieldWorker::FieldWorker(std::string* data, char* upCell, char* downCell, int r,
     {
         MarkAsEmptyField();
         growthRate = 0;
+        //worker = new std::thread(&FieldWorker::WorkerJob, this);
+    }
+    else
+    {
+        MarkAsGroundTile();
+        growthRate = 0;
+    }
+}
+
+void FieldWorker::StartWorkerJob()
+{
+    if (IsTribe() || IsEmptyField()) {
+        //std::cout << "Created: " << FoW;
         worker = new std::thread(&FieldWorker::WorkerJob, this);
     }
 }
 
 void FieldWorker::WorkerJob()
 {
+    std::this_thread::sleep_for((IsTribe() ? std::chrono::milliseconds(10) : std::chrono::milliseconds(20)));
+
     while (true)
     {
         if (IsTribe())
@@ -87,7 +100,7 @@ void FieldWorker::WorkerJob()
         else if (IsEmptyField())
         {
             {
-                std::lock_guard<std::mutex> lg(glMutex);
+                std::lock_guard<std::mutex> lg(glMutex, std::adopt_lock);
                 char newVal = '1';
                 if(IsRightCellTribe())
                 {
@@ -96,7 +109,8 @@ void FieldWorker::WorkerJob()
                     // Up   | Down neighbour
                     char right = GetRightNeighbour(1);
 
-                    if ((right > '2'  || right <= '9')) {
+                    if (right != 'X' && 
+                       (right > '2'  && right <= '9')) {
                         {
                             std::lock_guard<std::mutex> tranformLock(glMutex, std::adopt_lock);
                             FoW->replace(col, 1, 1, newVal);
@@ -107,7 +121,6 @@ void FieldWorker::WorkerJob()
                         }
                     }
                 }
-                
                 if (IsLeftCellTribe())
                 {
                     // Move pointers to correct position
@@ -115,7 +128,8 @@ void FieldWorker::WorkerJob()
                     // Up   | Down neighbour
                     char left = GetLeftNeighbour(1);
                     
-                    if ((left > '2' || left <= '9')) {
+                    if (left != 'X' && 
+                       (left > '2' && left <= '9')) {
                         {
                             std::lock_guard<std::mutex> tranformLock(glMutex, std::adopt_lock);
                             FoW->replace(col, 1, 1, newVal);
@@ -126,7 +140,6 @@ void FieldWorker::WorkerJob()
                         }
                     }
                 }
-                
                 if (IsUpCellTribe())
                 {
                     // Move pointers to correct position
@@ -134,18 +147,18 @@ void FieldWorker::WorkerJob()
                     // Up   | Down neighbour
                     char up = GetUpNeighbour(1);
                     
-                    if ((up > '2' || up <= '9')) {
+                    if (up != 'X' &&
+                       (up > '2' && up <= '9')) {
                         {
                             std::lock_guard<std::mutex> tranformLock(glMutex, std::adopt_lock);
                             FoW->replace(col, 1, 1, newVal);
-                            (FieldWorker::FoW - 1)->replace(col, 1, 1, up - 1);
+                            (FoW - 1)->replace(col, 1, 1, up - 1);
                             
                             MarkAsTribe();
                             GrowthRate();
                         }
                     }
                 }
-                
                 if (IsDownCellTribe())
                 {
                     // Move pointers to correct position
@@ -153,11 +166,12 @@ void FieldWorker::WorkerJob()
                     // Up   | Down neighbour
                     char down = GetDownNeighbour(1);
 
-                    if ((down > '2' || down <= '9')) {
+                    if (down != 'X' &&
+                       (down > '2' && down <= '9')) {
                         {
                             std::lock_guard<std::mutex> tranformLock(glMutex, std::adopt_lock);
                             FoW->replace(col, 1, 1, newVal);
-                            (FieldWorker::FoW + 1)->replace(col, 1, 1, down - 1);
+                            (FoW + 1)->replace(col, 1, 1, down - 1);
                             
                             MarkAsTribe();
                             GrowthRate();
@@ -215,42 +229,28 @@ bool FieldWorker::IsDownCellTribe()
 bool FieldWorker::IsNeighbourATribe(int side)
 {
     char neighbour;
+    if ((col == FieldWorker::size - 1) ||
+        (col == 0) ||
+        (row == 0) ||
+        (row == FieldWorker::rSize - 1)) {
+        return false;
+    }
 
     switch (side) {
         case NEIGHBOUR::RIGHT: {
             neighbour = GetRightNeighbour(1);
-            
-            if (col == FieldWorker::size - 1)
-            {
-                return false;
-            }
             break;
         }
         case NEIGHBOUR::LEFT: {
             neighbour = GetLeftNeighbour(1); 
-            
-            if (col == 0)
-            {
-                return false;
-            }
             break;
         }
         case NEIGHBOUR::UP: {
-            neighbour = GetUpNeighbour(1); 
-            
-            if (row == 0)
-            {
-                return false;
-            }
+            neighbour = GetUpNeighbour(1);
             break;
         }
         case NEIGHBOUR::DOWN: {
             neighbour = GetDownNeighbour(1); 
-            
-            if (row == FieldWorker::rSize - 1)
-            {
-                return false;
-            }
             break;
         }
     }

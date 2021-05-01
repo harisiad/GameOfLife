@@ -10,8 +10,8 @@ class FieldWorker
 {
 private:
     std::string* FoW;
-    char* upCell;
-    char* downCell;
+    char* upFoW;
+    char* downFoW;
     
     int size;
     int rSize;
@@ -61,20 +61,20 @@ public:
     void WorkerJob();
     void WorkerJobFinish();
 
-    inline void MarkAsTribe() { FieldWorker::isTribe = true; FieldWorker::isGroundTile = false; FieldWorker::isEmptyField = false; }
-    inline bool IsTribe() { return FieldWorker::isTribe; }
-    inline void MarkAsGroundTile() { FieldWorker::isGroundTile = true; FieldWorker::isTribe = false; FieldWorker::isEmptyField = false; }
-    inline bool IsGroundTile() { return FieldWorker::isGroundTile; }
-    inline void MarkAsEmptyField() { FieldWorker::isEmptyField = true; FieldWorker::isGroundTile = false; FieldWorker::isTribe = false; }
-    inline bool IsEmptyField() { return FieldWorker::isEmptyField; }
-    inline std::string* FOW() { return &FoW[col]; }
+    inline void MarkAsTribe() { isTribe = true; isGroundTile = false; isEmptyField = false; }
+    inline bool IsTribe() { return isTribe; }
+    inline void MarkAsGroundTile() { isGroundTile = true; isTribe = false; isEmptyField = false; }
+    inline bool IsGroundTile() { return isGroundTile; }
+    inline void MarkAsEmptyField() { isEmptyField = true; isGroundTile = false; isTribe = false; }
+    inline bool IsEmptyField() { return isEmptyField; }
+    inline std::string* FOW() { return FoW; }
     inline void FOW(char c) { FoW[col] = c; }
 
     bool IsNeighbourATribe(int);
-    inline char GetRightNeighbour(int pos) { return (col + pos < FieldWorker::size) ? (*FieldWorker::FoW)[col + pos] : 'Z'; }
-    inline char GetLeftNeighbour(int pos) { return (col - pos >= 0) ? (*FieldWorker::FoW)[col - pos] : 'Z'; }
-    inline char GetUpNeighbour(int pos) { std::string* tmp = FieldWorker::FoW; return (row - pos >= 0) ? (*(tmp - pos)).at(pos) : 'Z'; }
-    inline char GetDownNeighbour(int pos) { std::string* tmp = FieldWorker::FoW; return (row + pos < FieldWorker::rSize) ? (*(tmp + pos)).at(pos) : 'Z'; }
+    inline char GetRightNeighbour(int pos) { return (col + pos < size) ? (*FoW)[col + pos] : 'Z'; }
+    inline char GetLeftNeighbour(int pos) { return (col - pos >= 0) ? (*FoW)[col - pos] : 'Z'; }
+    inline char GetUpNeighbour(int pos) { std::string* tmp = FoW; return (row - pos >= 0) ? (*(tmp - pos)).at(col) : 'Z'; }
+    inline char GetDownNeighbour(int pos) { std::string* tmp = FoW; return (row + pos < rSize) ? (*(tmp + pos)).at(col) : 'Z'; }
 
     inline int GetRow() { return row; }
     inline int GetColumn() { return col; }
